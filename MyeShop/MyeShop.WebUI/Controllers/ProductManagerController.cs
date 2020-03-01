@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -37,15 +38,24 @@ namespace MyeShop.WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Product product)
+        public ActionResult Create(Product product, HttpPostedFileBase file)
         {
             if (!ModelState.IsValid)
+            {
                 return View(product);
+            }
+            else
+            {
+                if (file != null)
+                {
+                    product.Image = product.Id + Path.GetExtension(file.FileName);
 
-            _context.Insert(product);
-            _context.Commit();
-
-            return RedirectToAction("Index");
+                    file.SaveAs(Server.MapPath("//Content//ProductImages//") + product.Image);
+                }
+                _context.Insert(product);
+                _context.Commit();
+                return RedirectToAction("Index");
+            }
         }
 
         public ActionResult Edit(string Id)
@@ -62,7 +72,7 @@ namespace MyeShop.WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(Product product, string Id)
+        public ActionResult Edit(Product product, string Id, HttpPostedFileBase file)
         {
             Product productToUpdate = _context.Find(Id);
 
@@ -72,9 +82,14 @@ namespace MyeShop.WebUI.Controllers
             if (!ModelState.IsValid)
                 return View(product);
 
+            if (file != null)
+            {
+                productToUpdate.Image = product.Id + Path.GetExtension(file.FileName);
+
+                file.SaveAs(Server.MapPath("//Content//ProductImages//") + productToUpdate.Image);
+            }
             productToUpdate.Category = product.Category;
             productToUpdate.Description = product.Description;
-            productToUpdate.Image = product.Image;
             productToUpdate.Name = product.Name;
             productToUpdate.Price = product.Price;
 
@@ -90,7 +105,13 @@ namespace MyeShop.WebUI.Controllers
             if (productToDelete == null)
                 return HttpNotFound();
 
+            var currentImage = Server.MapPath("//Content//ProductImages//" + productToDelete.Image);
+
             _context.Delete(Id);
+            if (System.IO.File.Exists(currentImage))
+            {
+                System.IO.File.Delete(currentImage);
+            }
             _context.Commit();
             return RedirectToAction("Index");
         }
