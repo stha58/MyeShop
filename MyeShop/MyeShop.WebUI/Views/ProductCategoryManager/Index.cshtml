@@ -1,0 +1,56 @@
+﻿@model IEnumerable<MyeShop.Core.Models.ProductCategory>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table id="productcategory" class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                <button data-productcategory-id="@item.Id" class="btn btn-danger btn-sm js-delete">DELETE</button>
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            $("#productcategory").on("click", ".js-delete", function (e) {
+                var button = $(this);
+                bootbox.confirm("Are you sure to delete this product category?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/ProductCategoryManager/Delete/" + button.attr("data-productcategory-id"),
+                            success: function () {
+                                $(e.target).parents("tr").remove();
+                                toastr.success("Data successfully deleted...");
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
