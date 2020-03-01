@@ -4,12 +4,13 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
+using MyeShop.Core.Contracts;
 using MyeShop.Core.Models;
 
 namespace MyeShop.DataAccess.InMemory
 {
     //making Generic class
-    public class InMemoryRepository<T> where T : BaseEntity
+    public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
     {
         ObjectCache cache = MemoryCache.Default;
         List<T> items;
