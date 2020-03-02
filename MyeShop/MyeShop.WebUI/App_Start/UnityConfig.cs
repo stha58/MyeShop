@@ -3,6 +3,7 @@ using MyeShop.Core.Contracts;
 using MyeShop.Core.Models;
 using MyeShop.DataAccess.InMemory;
 using MyeShop.DataAccess.SQL;
+using MyeShop.Services;
 using Unity;
 
 namespace MyeShop.WebUI
@@ -47,6 +48,9 @@ namespace MyeShop.WebUI
             // container.RegisterType<IProductRepository, ProductRepository>();
             container.RegisterType<IRepository<Product>, SQLRepository<Product>>();
             container.RegisterType<IRepository<ProductCategory>, SQLRepository<ProductCategory>>();
+            container.RegisterType<IRepository<Basket>, SQLRepository<Basket>>();
+            container.RegisterType<IRepository<BasketItem>, SQLRepository<BasketItem>>();
+            container.RegisterType<IBasketService, BasketService>();
 
         }
     }

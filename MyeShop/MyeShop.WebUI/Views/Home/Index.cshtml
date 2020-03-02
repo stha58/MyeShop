@@ -34,7 +34,7 @@
                 <span>$ @item.Price</span>
             </div>
             <div class="col-md-12">
-                <a href="#" class="btn btn-success">Add to Cart</a>
+                <a href="@Url.Action("AddToBasket", "Basket", new {Id = item.Id})" class="btn btn-success">Add to Cart</a>
             </div>
         </div>
     }
